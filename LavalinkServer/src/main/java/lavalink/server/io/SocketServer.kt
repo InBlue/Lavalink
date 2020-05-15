@@ -68,6 +68,14 @@ class SocketServer(
 
             socketContext.send(json)
         }
+
+        fun sendSocketPing(socketContext: SocketContext, ping: Int) {
+            val json = JSONObject()
+            json.put("op", "ping")
+            json.put("difference", ping)
+
+            socketContext.send(json)
+        }
     }
 
     val contexts: Collection<SocketContext>
@@ -144,6 +152,7 @@ class SocketServer(
         when (json.getString("op")) {
             // @formatter:off
             "voiceUpdate"       -> handlers.voiceUpdate(session, json)
+            "ping"              -> handlers.ping(session, json)
             "play"              -> handlers.play(session, json)
             "stop"              -> handlers.stop(session, json)
             "pause"             -> handlers.pause(session, json)

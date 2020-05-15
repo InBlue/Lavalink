@@ -8,6 +8,8 @@ import org.springframework.web.socket.WebSocketSession
 import space.npstr.magma.api.MagmaMember
 import space.npstr.magma.api.MagmaServerUpdate
 
+import java.util.Date
+
 class WebSocketHandlers(private val contextMap: Map<String, SocketContext>) {
 
     companion object {
@@ -38,6 +40,12 @@ class WebSocketHandlers(private val contextMap: Map<String, SocketContext>) {
                 .token(token)
                 .build()
         sktContext.magma.provideVoiceServerUpdate(member, serverUpdate)
+    }
+
+    fun ping(session: WebSocketSession, json: JSONObject) {
+        val ctx = contextMap[session.id]!!
+        val ping = Date().getTime().toInt() - json.getInt("sent")
+        SocketServer.sendSocketPing(ctx, ping)
     }
 
     fun play(session: WebSocketSession, json: JSONObject) {
